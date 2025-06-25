@@ -1,0 +1,121 @@
+<template>
+  <div class="dashboard">
+    <div class="calendar-panel">
+      <div class="calendar-header">
+        <button class="nav-btn">&#8592;</button>
+        <span class="month-label">April 2025</span>
+        <button class="nav-btn">&#8594;</button>
+      </div>
+      <div class="calendar-grid">
+        <div class="calendar-row calendar-days">
+          <div v-for="day in days" :key="day" class="calendar-cell day-label">{{ day }}</div>
+        </div>
+        <div v-for="(week, wIdx) in weeks" :key="wIdx" class="calendar-row">
+          <div v-for="(date, dIdx) in week" :key="dIdx" class="calendar-cell">
+            <div v-if="date" class="date-number">{{ date.day }}</div>
+            <div v-for="event in date?.events || []" :key="event.id" :class="['event', event.type]">
+              {{ event.label }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+// Mock data for April 2025
+const weeks = [
+  [
+    { day: 30 }, { day: 31 }, { day: 1, events: [{ id: 1, label: 'Maintenance', type: 'maintenance' }, { id: 2, label: 'Rent Review', type: 'review' }] }, { day: 2 }, { day: 3, events: [{ id: 3, label: 'Property Key', type: 'key' }] }, { day: 4, events: [{ id: 4, label: 'Maintenance', type: 'maintenance' }] }, { day: 5 }
+  ],
+  [
+    { day: 6, events: [{ id: 5, label: 'Maintenance', type: 'maintenance' }, { id: 6, label: 'Renewal Option Expiry', type: 'expiry' }] }, { day: 7 }, { day: 8, events: [{ id: 7, label: 'Maintenance', type: 'maintenance' }] }, { day: 9 }, { day: 10 }, { day: 11, events: [{ id: 8, label: 'Maintenance', type: 'maintenance' }] }, { day: 12 }
+  ],
+  [
+    { day: 13, events: [{ id: 9, label: 'Maintenance', type: 'maintenance' }] }, { day: 14 }, { day: 15, events: [{ id: 10, label: 'Maintenance', type: 'maintenance' }] }, { day: 16 }, { day: 17 }, { day: 18 }, { day: 19 }
+  ],
+  [
+    { day: 20, events: [{ id: 11, label: 'Maintenance', type: 'maintenance' }] }, { day: 21 }, { day: 22, events: [{ id: 12, label: 'Maintenance', type: 'maintenance' }] }, { day: 23 }, { day: 24 }, { day: 25 }, { day: 26 }
+  ],
+  [
+    { day: 27, events: [{ id: 13, label: 'Maintenance', type: 'maintenance' }] }, { day: 28 }, { day: 29, events: [{ id: 14, label: 'Maintenance', type: 'maintenance' }] }, { day: 30 }, { day: 1 }, { day: 2 }, { day: 3 }
+  ]
+]
+</script>
+
+<style scoped>
+.dashboard {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0;
+}
+.calendar-panel {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px #0001;
+  padding: 1.5rem;
+  min-width: 700px;
+}
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+.month-label {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+.nav-btn {
+  background: #f7f6f3;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  padding: 0.2rem 0.7rem;
+  cursor: pointer;
+}
+.calendar-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.calendar-row {
+  display: flex;
+}
+.calendar-cell {
+  flex: 1;
+  min-width: 90px;
+  min-height: 60px;
+  border: 1px solid #e0e0e0;
+  background: #fafafa;
+  position: relative;
+  padding: 4px 6px 2px 6px;
+  font-size: 0.95rem;
+}
+.day-label {
+  background: #f7f6f3;
+  font-weight: 600;
+  text-align: center;
+  border-bottom: 2px solid #e0e0e0;
+}
+.date-number {
+  font-size: 0.95em;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.event {
+  margin-top: 2px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.85em;
+  color: #fff;
+  display: inline-block;
+}
+.event.maintenance { background: #2d5c88; }
+.event.review { background: #bfa32b; }
+.event.key { background: #3b7c3b; }
+.event.expiry { background: #2b8fbf; }
+</style> 
