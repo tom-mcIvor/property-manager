@@ -7,8 +7,8 @@
     <div class="nav-left">
       <span class="logo"><span class="logo-letter">T</span><span class="logo-double-dash"><span></span><span></span></span><span class="logo-letter">M</span></span>
       <nav class="nav-menu">
-        <a href="#" class="nav-item active">Dashboard</a>
-        <a href="#" class="nav-item">Property Management <span class="chevron">▼</span></a>
+        <router-link to="/dashboard" class="nav-item" :class="{ active: $route.path === '/dashboard' }">Dashboard</router-link>
+        <router-link to="/properties" class="nav-item" :class="{ active: $route.path === '/properties' }">Properties</router-link>
         <a href="#" class="nav-item">Accounting <span class="chevron">▼</span></a>
         <a href="#" class="nav-item">Reporting <span class="chevron">▼</span></a>
       </nav>
