@@ -46,18 +46,36 @@ const weeks = [
 </script>
 
 <style scoped>
+:root {
+  --dashboard-bg: #fff;
+  --dashboard-radius: 8px;
+  --dashboard-shadow: 0 2px 8px #0001;
+  --calendar-header-bg: #f7f6f3;
+  --calendar-border: #e0e0e0;
+  --calendar-cell-bg: #fafafa;
+  --event-maintenance: #2d5c88;
+  --event-review: #bfa32b;
+  --event-key: #3b7c3b;
+  --event-expiry: #2b8fbf;
+  --main-padding: 1.5rem;
+  --cell-min-width: 90px;
+  --cell-min-height: 60px;
+}
+
 .dashboard {
   display: flex;
   justify-content: center;
   padding: 2rem 0;
 }
+
 .calendar-panel {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px #0001;
-  padding: 1.5rem;
+  background: var(--dashboard-bg);
+  border-radius: var(--dashboard-radius);
+  box-shadow: var(--dashboard-shadow);
+  padding: var(--main-padding);
   min-width: 700px;
 }
+
 .calendar-header {
   display: flex;
   align-items: center;
@@ -65,47 +83,56 @@ const weeks = [
   margin-bottom: 1rem;
   gap: 1rem;
 }
+
 .month-label {
   font-size: 1.2rem;
   font-weight: 600;
 }
+
 .nav-btn {
-  background: #f7f6f3;
-  border: 1px solid #e0e0e0;
+  background: var(--calendar-header-bg);
+  border: 1px solid var(--calendar-border);
   border-radius: 4px;
   font-size: 1.1rem;
   padding: 0.2rem 0.7rem;
   cursor: pointer;
 }
+
 .calendar-grid {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
+
 .calendar-row {
   display: flex;
 }
-.calendar-cell {
+
+.calendar-cell,
+.day-label {
   flex: 1;
-  min-width: 90px;
-  min-height: 60px;
-  border: 1px solid #e0e0e0;
-  background: #fafafa;
+  min-width: var(--cell-min-width);
+  min-height: var(--cell-min-height);
+  border: 1px solid var(--calendar-border);
+  background: var(--calendar-cell-bg);
   position: relative;
   padding: 4px 6px 2px 6px;
   font-size: 0.95rem;
 }
+
 .day-label {
-  background: #f7f6f3;
+  background: var(--calendar-header-bg);
   font-weight: 600;
   text-align: center;
-  border-bottom: 2px solid #e0e0e0;
+  border-bottom: 2px solid var(--calendar-border);
 }
+
 .date-number {
   font-size: 0.95em;
   font-weight: 600;
   margin-bottom: 2px;
 }
+
 .event {
   margin-top: 2px;
   padding: 2px 6px;
@@ -114,8 +141,9 @@ const weeks = [
   color: #fff;
   display: inline-block;
 }
-.event.maintenance { background: #2d5c88; }
-.event.review { background: #bfa32b; }
-.event.key { background: #3b7c3b; }
-.event.expiry { background: #2b8fbf; }
+
+.event.maintenance { background: var(--event-maintenance); }
+.event.review { background: var(--event-review); }
+.event.key { background: var(--event-key); }
+.event.expiry { background: var(--event-expiry); }
 </style> 
