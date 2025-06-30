@@ -19,6 +19,44 @@
   --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
   --vt-c-text-dark-1: var(--vt-c-white);
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+
+  /* Project-specific color variables */
+  --color-primary: #1976d2;
+  --color-primary-dark: #1565c0;
+  --color-success: #28a745;
+  --color-success-dark: #218838;
+  --color-warning: #ffc107;
+  --color-warning-dark: #e0a800;
+  --color-danger: #dc3545;
+  --color-danger-dark: #c82333;
+  --color-info: #2b8fbf;
+  --color-secondary: #6c757d;
+  --color-secondary-dark: #5a6268;
+  --color-card-bg: #fff;
+  --color-card-border: #e9ecef;
+  --color-card-shadow: rgba(0, 0, 0, 0.05);
+  --color-card-shadow-hover: rgba(0, 0, 0, 0.1);
+  --color-card-shadow-strong: rgba(0, 0, 0, 0.15);
+  --color-muted: #888;
+  --color-dark: #111;
+  --color-dark-2: #222;
+  --color-dark-3: #333;
+  --color-dark-4: #444;
+  --color-light: #fafafa;
+  --color-light-2: #f0f0f0;
+  --color-light-3: #f7f6f3;
+  --color-light-4: #f8f9fa;
+  --color-light-5: #fdfbee;
+  --color-border-2: #ced4da;
+  --color-border-3: #dee2e6;
+  --color-border-4: #e0e0e0;
+  --color-border-5: #e9ecef;
+  --color-calendar-header: #f7f6f3;
+  --color-calendar-cell: #fafafa;
+  --color-event-maintenance: #2d5c88;
+  --color-event-review: #bfa32b;
+  --color-event-key: #3b7c3b;
+  --color-event-expiry: #2b8fbf;
 }
 
 /* semantic color variables for this project */
