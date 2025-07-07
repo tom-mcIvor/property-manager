@@ -1,4 +1,5 @@
 <script setup>
+import IconsBar from './components/IconsBar.vue'
 // No imports needed for now; router-view will handle page rendering
 </script>
 
@@ -19,7 +20,10 @@
   </header>
   <div class="sub-navbar">
     <span class="sub-navbar-title">All Companies</span>
-    <input class="search-bar" type="text" placeholder="Search..." />
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <input class="search-bar" type="text" placeholder="Search..." />
+      <IconsBar />
+    </div>
   </div>
   <main>
     <router-view />
