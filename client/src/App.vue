@@ -22,7 +22,7 @@ import IconsBar from './components/IconsBar.vue'
     <span class="sub-navbar-title">All Companies</span>
     <div style="display: flex; align-items: center; gap: 1rem;">
       <input class="search-bar" type="text" placeholder="Search..." />
-      <IconsBar />
+      <!-- <IconsBar /> removed -->
     </div>
   </div>
   <main>

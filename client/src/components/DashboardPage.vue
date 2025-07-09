@@ -1,6 +1,15 @@
 <template>
   <div class="dashboard">
     <div class="calendar-panel">
+      <div class="calendar-tabs">
+        <button class="calendar-tab active">My Calendar</button>
+        <button class="calendar-tab">Global Calendar</button>
+        <button class="calendar-tab">My Analytics</button>
+        <button class="calendar-tab">My Inbox</button>
+      </div>
+      <div class="calendar-search-bar-wrapper">
+        <input type="text" class="calendar-search-bar" placeholder="Search calendar..." />
+      </div>
       <div class="calendar-header">
         <button class="nav-btn">&#8592;</button>
         <span class="month-label">April 2025</span>
@@ -74,6 +83,58 @@ const weeks = [
   box-shadow: var(--dashboard-shadow);
   padding: var(--main-padding);
   min-width: 700px;
+  border: 1px solid #ccc; /* Added border for simple box */
+}
+
+.calendar-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.2rem;
+}
+.calendar-tab {
+  background: #f7f6f3;
+  /* border: 1px solid #e0e0e0; */
+  border: none;
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  color: #333;
+  outline: none;
+  transition: background 0.2s, color 0.2s;
+}
+.calendar-tab.active, .calendar-tab:hover {
+  background: #fff;
+  color: #1976d2;
+  border-bottom: 2px solid #fff;
+  z-index: 1;
+}
+
+.calendar-search-bar-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+}
+.calendar-search-bar {
+  width: 96%;
+  max-width: 900px;
+  padding: 0.7rem 1.2rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #fafafa;
+  color: #222;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  transition: border 0.2s, box-shadow 0.2s;
+}
+.calendar-search-bar:focus {
+  outline: none;
+  border: 1.5px solid #1976d2;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
 }
 
 .calendar-header {
