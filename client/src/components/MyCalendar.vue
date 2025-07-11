@@ -226,6 +226,8 @@ function nextMonth() {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  /* Remove right border */
+  border-right: none;
 }
 
 .calendar-inner {

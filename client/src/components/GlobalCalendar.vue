@@ -133,6 +133,8 @@ const monthLabel = computed(() => `${monthNames[currentMonth.value]} ${currentYe
   border: 1px solid #ccc;
   display: flex;
   flex-direction: column;
+  /* Remove right border */
+  border-right: none;
 }
 
 .calendar-inner {
