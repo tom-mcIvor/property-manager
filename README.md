@@ -1,5 +1,9 @@
 # Property Manager (Released Clone)
 
+## Live Demo (Frontend Only)
+
+You can view the deployed frontend here: [https://zealous-water-0458bc600.1.azurestaticapps.net/](https://zealous-water-0458bc600.1.azurestaticapps.net/)
+
 This project is a clone of the Released property manager app, built to demonstrate proficiency with the Released technology stack. It features a modern Vue 3 frontend and an ASP.NET Core backend, with SQL Server as the database.
 
 ## Tech Stack
