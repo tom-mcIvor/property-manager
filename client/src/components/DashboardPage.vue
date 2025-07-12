@@ -101,7 +101,6 @@ function setTab(tab) {
   background: #fafbfc;
   border-radius: 8px;
   box-shadow: 0 2px 8px #0001;
-  border: 1px solid #e0e0e0;
   display: flex;
   flex-direction: column;
   height: 74vh;
