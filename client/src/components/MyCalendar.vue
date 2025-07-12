@@ -26,10 +26,12 @@
         </div>
         <div v-for="(week, wIdx) in weeks" :key="wIdx" class="calendar-row">
           <div v-for="(date, dIdx) in week" :key="dIdx" class="calendar-cell">
-            <div v-if="date" class="date-number">{{ date.day }}</div>
-            <div v-for="event in date?.events || []" :key="event.id" :class="['event', event.type]">
-              <span class="event-bang">!</span>
-              <span class="event-label">{{ event.label.replace(/^!\s*/, '') }}</span>
+            <div class="calendar-cell-content">
+              <div v-if="date" class="date-number">{{ date.day }}</div>
+              <div v-for="event in date?.events || []" :key="event.id" :class="['event', event.type]">
+                <span class="event-bang">!</span>
+                <span class="event-label">{{ event.label.replace(/^!\s*/, '') }}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -353,7 +355,7 @@ function nextMonth() {
   min-height: var(--cell-min-height);
   background: var(--calendar-cell-bg);
   position: relative;
-  padding: 4px 6px 2px 6px;
+  padding: 4px 6px 2px 6px; /* revert right padding to default */
   font-size: 0.95rem;
   border-right: 1px solid #ededed;
   word-break: break-word;
@@ -361,6 +363,23 @@ function nextMonth() {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+}
+
+/* Add a wrapper for date and events */
+.calendar-cell-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.event {
+  width: auto;
+  margin-right: 8px; /* space from right edge */
+  margin-left: 0;
+  margin-bottom: 2px;
+  box-sizing: border-box;
+  display: block;
 }
 
 @media (max-width: 1200px) {
@@ -401,16 +420,17 @@ function nextMonth() {
   font-size: 0.95em;
   font-weight: 600;
   margin-bottom: 2px;
+  width: 100%;
 }
 
 .event {
-  margin-top: 2px;
-  padding: 2px 6px;
-  border-radius: 3px;
-  font-size: 0.85em;
-  color: #fff;
-  display: inline-block;
-  white-space: nowrap;
+  width: 100%;
+  margin-right: 0;
+  margin-left: 0;
+  margin-bottom: 2px;
+  box-sizing: border-box;
+  display: block;
+  /* Add a little space from the right edge */
 }
 
 .event.maintenance {
