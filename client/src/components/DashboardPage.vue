@@ -21,29 +21,10 @@
       </div>
       <div class="sidebar-events" v-if="sidebarTab === 'overdue' || sidebarTab === 'today'">
         <template v-if="sidebarTab === 'today'">
-          <div class="event-card maintenance">
-            <div class="event-dot maintenance"></div>
-            <div class="event-main">
-              <div class="event-title">Maintenance <span class="event-date">3/04/2025</span></div>
-              <div class="event-property">Property: 34 Queen St</div>
-              <div class="event-tenancy">Tenancy: Marsland - Head Lease</div>
-            </div>
-          </div>
-          <div class="event-card inspection">
-            <div class="event-dot inspection"></div>
-            <div class="event-main">
-              <div class="event-title">Inspection <span class="event-date">3/04/2025</span></div>
-              <div class="event-property">Property: 34 Queen St</div>
-              <div class="event-tenancy">Tenancy: Smartechnologies</div>
-            </div>
-          </div>
-          <div class="event-card anniversary">
-            <div class="event-dot anniversary"></div>
-            <div class="event-main">
-              <div class="event-title">Property Anniversary <span class="event-date">1/01/2005</span></div>
-              <div class="event-property">Property: 219 Moore Street</div>
-            </div>
-            <div class="event-overdue-bar"></div>
+          <TodaySidebarCards />
+          <!-- Tools Component below Today -->
+          <div class="tools-section">
+            <ToolsComponent />
           </div>
         </template>
         <template v-else>
@@ -70,6 +51,8 @@ import MyAnalytics from './MyAnalytics.vue';
 import MyInbox from './MyInbox.vue';
 import TodayButton from './TodayButton.vue';
 import OverdueButton from './OverdueButton.vue';
+import TodaySidebarCards from './TodaySidebarCards.vue';
+import ToolsComponent from './ToolsComponent.vue';
 const activeTab = ref('my');
 const sidebarTab = ref('today');
 
@@ -122,6 +105,14 @@ function setTab(tab) {
   margin-top: 36px;
   box-sizing: border-box;
   gap: 2rem;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+@media (min-width: 901px) {
+  .dashboard {
+    overflow-x: hidden;
+  }
 }
 @media (max-width: 600px) {
   .dashboard {
@@ -144,6 +135,7 @@ function setTab(tab) {
   display: flex;
   border-bottom: 1px solid #e0e0e0;
   margin-bottom: 0.5rem;
+  margin-top: 1.5rem; /* Align with .calendar-inner top padding */
 }
 .sidebar-tab {
   flex: 1;
@@ -234,30 +226,83 @@ function setTab(tab) {
   border-radius: 0 8px 8px 0;
 }
 
+.tools-section {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e0e0e0;
+}
+
 .calendar-panel {
   background: var(--dashboard-bg);
   border-radius: var(--dashboard-radius);
   box-shadow: var(--dashboard-shadow);
   padding: var(--main-padding);
-  width: fit-content;
-  min-width: 600px;
-  max-width: 100vw;
+  width: 900px;
+  min-width: 900px;
+  max-width: 900px;
   height: 74vh;
+  min-height: 700px;
   margin: 0 auto 0 auto;
   border: 1px solid #ccc;
   display: flex;
   flex-direction: column;
-  /* Remove right border */
   border-right: none;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+@media (min-width: 901px) {
+  .calendar-panel {
+    overflow-x: hidden;
+  }
+}
+@media (max-width: 1200px) {
+  .calendar-panel {
+    width: 700px;
+    min-width: 700px;
+    max-width: 700px;
+  }
+}
+@media (max-width: 700px) {
+  .calendar-panel {
+    width: 100vw;
+    min-width: 0;
+    max-width: 100vw;
+    padding: 0.5rem;
+  }
+  .calendar-inner {
+    padding: 0.5rem;
+  }
+}
+@media (max-width: 900px) {
+  .calendar-panel {
+    width: 100vw;
+    min-width: 0;
+    max-width: 100vw;
+    margin-left: 0;
+    margin-right: 0;
+    border-radius: 0;
+  }
+  .event {
+    display: none !important;
+  }
 }
 
 .calendar-inner {
   width: 100%;
   height: 100%;
+  min-height: 600px;
   box-sizing: border-box;
   padding: 1.5rem 1.5rem 1.2rem 1.5rem;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+}
+
+@media (max-width: 900px) {
+  .calendar-inner {
+    overflow: auto;
+  }
 }
 
 .calendar-tabs {
@@ -388,14 +433,17 @@ function setTab(tab) {
 
 .calendar-cell,
 .day-label {
-  flex: 1;
+  flex: 1 1 0;
+  width: calc(100% / 7);
   min-width: var(--cell-min-width);
+  max-width: calc(100% / 7);
   min-height: var(--cell-min-height);
   background: var(--calendar-cell-bg);
   position: relative;
   padding: 4px 6px 2px 6px;
   font-size: 0.95rem;
   border-right: 1px solid #ededed;
+  box-sizing: border-box;
 }
 
 .calendar-cell:last-child,

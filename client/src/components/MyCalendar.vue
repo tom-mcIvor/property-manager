@@ -1,25 +1,33 @@
 <template>
   <div class="calendar-panel">
     <div class="calendar-inner">
-      <div class="calendar-search-bar-wrapper">
-        <input type="text" class="calendar-search-bar" placeholder="Search calendar..." />
+      <!-- Calendar Header with Navigation and Controls -->
+      <div class="calendar-header-section">
+        <div class="calendar-left-controls">
+          <button class="nav-btn" aria-label="Previous Month" @click="prevMonth">
+            <svg width="12" height="12" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="12,2 4,8 12,14" fill="#999" />
+            </svg>
+          </button>
+          <span class="month-label">{{ monthLabel }}</span>
+          <button class="today-btn">today</button>
+        </div>
+        
+        <div class="calendar-right-controls">
+          <div class="view-controls">
+            <button class="view-btn active">month</button>
+            <button class="view-btn">week</button>
+            <button class="view-btn">day</button>
+          </div>
+          <button class="nav-btn" aria-label="Next Month" @click="nextMonth">
+            <svg width="12" height="12" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="4,2 12,8 4,14" fill="#999" />
+            </svg>
+          </button>
+        </div>
       </div>
-      <div class="calendar-refresh-btn-wrapper">
-        <button class="calendar-refresh-btn">Refresh Calendar</button>
-      </div>
-      <div class="calendar-header">
-        <button class="nav-btn" aria-label="Previous Month" @click="prevMonth">
-          <svg width="18" height="18" viewBox="0 0 18 18" style="display:block" xmlns="http://www.w3.org/2000/svg">
-            <polygon points="12,4 6,9 12,14" fill="#666" />
-          </svg>
-        </button>
-        <span class="month-label">{{ monthLabel }}</span>
-        <button class="nav-btn" aria-label="Next Month" @click="nextMonth">
-          <svg width="18" height="18" viewBox="0 0 18 18" style="display:block" xmlns="http://www.w3.org/2000/svg">
-            <polygon points="6,4 12,9 6,14" fill="#666" />
-          </svg>
-        </button>
-      </div>
+
+      <!-- Calendar Grid -->
       <div class="calendar-grid">
         <div class="calendar-row calendar-days">
           <div v-for="day in days" :key="day" class="calendar-cell day-label">{{ day }}</div>
@@ -28,13 +36,12 @@
           <div v-for="(date, dIdx) in week" :key="dIdx" class="calendar-cell">
             <div class="calendar-cell-content">
               <div v-if="date" class="date-number">{{ date.day }}</div>
-              <div v-for="event in date?.events || []" :key="event.id"
-                :class="['event', event.type]">
-                <div class="event-with-popup">
+              <div class="events-container">
+                <div v-for="event in date?.events || []" :key="event.id"
+                  :class="['event', event.type]">
                   <button class="event-btn"
                     @mouseenter="showPopup(event, date.day, currentMonth, currentYear)"
                     @mouseleave="hidePopup()">
-                    <span class="event-bang">!</span>
                     <span class="event-label">{{ event.label.replace(/^!\s*/, '') }}</span>
                   </button>
                   <LocalEventPopup
@@ -47,6 +54,82 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Legend -->
+      <div class="calendar-legend">
+        <div class="legend-item">
+          <div class="legend-dot maintenance">
+            <span class="checkmark">✓</span>
+          </div>
+          <span>Maintenance</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot rent-review">
+            <span class="checkmark">✓</span>
+          </div>
+          <span>Rent Review</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot lease-break">
+            <span class="checkmark">✓</span>
+          </div>
+          <span>Lease Break</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot compliance">
+            <span class="checkmark">✓</span>
+          </div>
+          <span>Compliance</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot term-renewal">
+            <span class="checkmark">✓</span>
+          </div>
+          <span>Term Renewal</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot budget-end">
+            <span class="checkmark">✓</span>
+          </div>
+          <span>Budget End</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot insurance-renewal">
+            <span class="checkmark">✓</span>
+          </div>
+          <span>Insurance Renewal</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot suppliers-insurance">
+            <span class="checkmark">✓</span>
+          </div>
+          <span>Suppliers Insurance</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot property-key">
+            <span class="checkmark">✓</span>
+          </div>
+          <span>Property Key</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot property-insurance">
+            <span class="checkmark">✓</span>
+          </div>
+          <span>Property Insurance</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot final-bond">
+            <span class="checkmark">✓</span>
+          </div>
+          <span>Final Bond</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot renewal-options">
+            <span class="checkmark">✓</span>
+          </div>
+          <span>Renewal Options</span>
         </div>
       </div>
     </div>
@@ -142,12 +225,12 @@ function getEventsForDay(day, month, year) {
   // Spread test events across all days of 2024, 2025, and 2026, random but deterministic, and ensure at least one black label per month
   if (year === 2024 || year === 2025 || year === 2026) {
     const eventTypes = [
-      { type: 'maintenance', label: '! Test Maintenance' },
-      { type: 'reminder', label: '! Test Reminder' },
-      { type: 'inspection', label: '! Test Inspection' },
-      { type: 'rent-review', label: '! Test Rent Review' },
-      { type: 'renewal-expiry', label: '! Test Renewal Option Expiry' },
-      { type: 'property-anniversary', label: '! Test Property Anniversary' }
+      { type: 'maintenance', label: '! Maintenance' },
+      { type: 'reminder', label: '! Reminder' },
+      { type: 'inspection', label: '! Inspection' },
+      { type: 'rent-review', label: '! Rent Review' },
+      { type: 'renewal-expiry', label: '! Renewal Option Expiry' },
+      { type: 'property-anniversary', label: '! Property Anniversary' }
     ];
     const hash = (day + 31 * (month + 1) + 101 * year);
     let events = [];
@@ -172,7 +255,7 @@ function getEventsForDay(day, month, year) {
       if (!hasBlack) {
         events.push({
           id: 20000 + 15 + 100 * (month + 1) + 1000 * (year - 2024),
-          label: '! Test Property Anniversary',
+          label: '! Property Anniversary',
           type: 'property-anniversary'
         });
       }
@@ -236,20 +319,22 @@ function nextMonth() {
   --dashboard-bg: #fff;
   --dashboard-radius: 8px;
   --dashboard-shadow: 0 2px 8px #0001;
-  --calendar-header-bg: #f7f6f3;
-  --calendar-border: #e0e0e0;
-  --calendar-cell-bg: #fafafa;
-  --event-maintenance: #2d5c88;
-  --event-review: #bfa32b;
-  --event-key: #3b7c3b;
-  --event-expiry: #2b8fbf;
-  --main-padding: 1.2rem;
-  --cell-min-width: 72px;
-  --cell-min-height: 88px;
+  --calendar-header-bg: #f8f9fa;
+  --calendar-border: #e9ecef;
+  --calendar-cell-bg: #fff;
+  --event-maintenance: #4a5568;
+  --event-inspection: #38a169;
+  --event-rent-review: #d69e2e;
+  --event-reminder: #3182ce;
+  --event-renewal: #805ad5;
+  --event-anniversary: #e53e3e;
+  --main-padding: 1.5rem;
+  --cell-min-width: 120px;
+  --cell-min-height: 100px;
 }
 
 .calendar-panel {
-  background: var(--dashboard-bg);
+  background: #ffffff;
   border-radius: var(--dashboard-radius);
   box-shadow: var(--dashboard-shadow);
   padding: var(--main-padding);
@@ -258,184 +343,180 @@ function nextMonth() {
   max-width: 900px;
   height: 74vh;
   margin: auto;
-  border: 1px solid #ccc;
+  border-top: 1px solid var(--calendar-border);
+  border-right: 1px solid var(--calendar-border);
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  /* Remove right border */
-  border-right: none;
+  overflow: hidden;
+  position: relative;
+  z-index: 10;
+}
+
+@media (min-width: 901px) {
+  .calendar-panel {
+    overflow-x: hidden;
+  }
 }
 
 .calendar-inner {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  padding: 1.5rem 1.5rem 1.2rem 1.5rem;
+  padding: 0;
   display: flex;
   flex-direction: column;
+  overflow: visible;
 }
 
-.calendar-search-bar-wrapper {
-  width: 100%;
+@media (max-width: 900px) {
+  .calendar-inner {
+    overflow: auto;
+  }
+}
+
+/* Header Section */
+.calendar-header-section {
   display: flex;
-  justify-content: center;
-  margin-bottom: 1.2rem;
-}
-.calendar-search-bar {
-  width: 100%;
-  max-width: none;
-  padding: 0.7rem 1.2rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  font-size: 1rem;
-  background: #fafafa;
-  color: #222;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-  transition: border 0.2s, box-shadow 0.2s;
-}
-.calendar-search-bar:focus {
-  outline: none;
-  border: 1.5px solid #1976d2;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  background: #ffffff;
 }
 
-.calendar-refresh-btn-wrapper {
-  width: 100%;
-  display: flex;
-  justify-content: flex-start;
-  margin-top: -0.9rem;
-  margin-bottom: 0.8rem;
-}
-.calendar-refresh-btn {
-  background: #222;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 0.4rem 0.96rem;
-  font-size: 0.8rem;
-  font-weight: 500;
-  cursor: pointer;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.10);
-  transition: background 0.2s, box-shadow 0.2s;
-}
-.calendar-refresh-btn:hover {
-  background: #444;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.13);
-}
-
-.calendar-header {
+.calendar-left-controls {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  margin-bottom: 1rem;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
-.month-label {
-  font-size: 1.2rem;
-  font-weight: 600;
-  flex: 1 1 0;
-  text-align: center;
-  padding: 0 0.5rem;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 100%;
+.calendar-right-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .nav-btn {
-  background: var(--calendar-header-bg);
-  border: 1px solid var(--calendar-border);
-  border-radius: 4px;
-  font-size: 1.1rem;
-  padding: 0.2rem 0.7rem;
+  background: none;
+  border: none;
+  padding: 0.25rem;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+  border-radius: 2px;
 }
 
+.nav-btn:hover {
+  opacity: 0.7;
+}
+
+.month-label {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #6b7280;
+  margin: 0 0.5rem;
+}
+
+.today-btn {
+  background: none;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.today-btn:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.view-controls {
+  display: flex;
+  gap: 0;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.view-btn {
+  background: #ffffff;
+  border: none;
+  border-right: 1px solid #d1d5db;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.view-btn:last-child {
+  border-right: none;
+}
+
+.view-btn.active {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.view-btn:not(.active):hover {
+  background: #f9fafb;
+}
+
+/* Calendar Grid */
 .calendar-grid {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  justify-content: stretch;
-  height: 100%;
-  border: 1px solid #ededed; /* Match grid cell border */
+  min-height: 0; /* Allow flex shrinking */
+  max-height: calc(100% - 80px); /* Reserve space for legend */
+  overflow: hidden;
+  border: 1px solid #ededed;
   border-top: none;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+  border-radius: 4px;
+}
+
+@media (max-width: 900px) {
+  .calendar-grid {
+    overflow: auto;
+  }
 }
 
 .calendar-row {
   display: flex;
   flex: 1;
-  border-bottom: 1px solid #ededed;
 }
 
-.calendar-row:last-child {
+.calendar-row:last-child .calendar-cell {
   border-bottom: none;
 }
 
 .calendar-row.calendar-days {
-  border-bottom: 1px solid #ededed;
+  flex: none;
+  background: var(--calendar-header-bg);
+  border-bottom: 1px solid var(--calendar-border);
 }
 
 .calendar-cell,
 .day-label {
-  flex: 1;
+  flex: 1 1 0;
+  width: calc(100% / 7);
   min-width: var(--cell-min-width);
+  max-width: calc(100% / 7);
   min-height: var(--cell-min-height);
   background: var(--calendar-cell-bg);
   position: relative;
-  padding: 4px 6px 2px 6px; /* revert right padding to default */
-  font-size: 0.95rem;
+  padding: 0.75rem 0.5rem;
+  font-size: 0.875rem;
   border-right: 1px solid #ededed;
-  word-break: break-word;
-  white-space: normal;
-  overflow: visible; /* Allow popup to show outside cell */
-  text-overflow: ellipsis;
-  max-width: 100%;
-}
-
-/* Add a wrapper for date and events */
-.calendar-cell-content {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.event {
-  width: auto;
-  margin-right: 8px; /* space from right edge */
-  margin-left: 0;
-  margin-bottom: 2px;
+  border-bottom: 1px solid #ededed;
   box-sizing: border-box;
-  display: block;
-}
-
-@media (max-width: 1200px) {
-  .calendar-cell,
-  .day-label {
-    font-size: 0.8rem;
-    padding: 2px 3px 1px 3px;
-  }
-}
-@media (max-width: 900px) {
-  .calendar-cell,
-  .day-label {
-    font-size: 0.7rem;
-    padding: 1px 2px 1px 2px;
-  }
-}
-@media (max-width: 600px) {
-  .calendar-cell,
-  .day-label {
-    font-size: 0.6rem;
-    padding: 1px 1px 1px 1px;
-  }
+  overflow: visible;
 }
 
 .calendar-cell:last-child,
@@ -447,106 +528,77 @@ function nextMonth() {
   background: var(--calendar-header-bg);
   font-weight: 600;
   text-align: center;
-  padding-bottom: 2px; /* Reduce bottom padding to move border closer */
+  color: #4a5568;
+  padding: 0.75rem 0.5rem;
+  min-height: auto;
+}
+
+.calendar-cell-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .date-number {
-  font-size: 0.95em;
-  font-weight: 600;
-  margin-bottom: 2px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+}
+
+.events-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  flex: 1;
   width: 100%;
 }
 
+/* Event Styles */
 .event {
-  width: 100%;
-  margin-right: 0;
-  margin-left: 0;
-  margin-bottom: 2px;
-  box-sizing: border-box;
+  border-radius: 3px;
+  padding: 0.125rem 0.375rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-bottom: 0.125rem;
   display: block;
-  /* Add a little space from the right edge */
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 16px;
+  line-height: 1.2;
+}
+
+.event:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
 }
 
 .event.maintenance {
-  background: #2d5c88;
-  font-weight: bold;
-  letter-spacing: 0.5px;
+  background: #4a5568;
 }
-.event.rent-review {
-  background: #bfa32b;
-  color: #fff;
-  font-weight: bold;
-  letter-spacing: 0.5px;
-}
-.event.reminder {
-  background: #ff9800;
-  color: #fff;
-  font-weight: bold;
-  letter-spacing: 0.5px;
-}
-.event.renewal-expiry {
-  background: #8bc34a;
-  color: #fff;
-  font-weight: bold;
-  letter-spacing: 0.5px;
-}
-.event.property-anniversary {
-  background: #222;
-  color: #fff;
-  font-weight: bold;
-  letter-spacing: 0.5px;
-}
-.event.inspection {
-  background: #4caf50;
-  font-weight: bold;
-  letter-spacing: 0.5px;
-}
-.event.review { background: var(--event-review); }
-.event.key { background: var(--event-key); }
-.event.expiry { background: var(--event-expiry); }
 
-.event-bang {
-  font-weight: bold;
-  margin-right: 4px;
-  display: inline-block;
-  vertical-align: middle;
+.event.inspection {
+  background: #38a169;
 }
-.event-label {
-  display: inline-block;
-  vertical-align: middle;
-  word-break: break-word;
-  white-space: nowrap;
-  overflow-wrap: break-word;
-  max-width: 100%;
-  font-size: 0.75em;
-  overflow: hidden;
-  text-overflow: ellipsis;
+
+.event.rent-review {
+  background: #d69e2e;
 }
-.event-hoverable {
-  position: relative;
-  cursor: pointer;
+
+.event.reminder {
+  background: #3182ce;
 }
-.event-popup {
-  display: none;
-  position: absolute;
-  left: 110%;
-  top: 50%;
-  transform: translateY(-50%);
-  background: #222;
-  color: #fff;
-  padding: 0.5em 1em;
-  border-radius: 6px;
-  white-space: nowrap;
-  font-size: 0.95em;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
-  z-index: 10;
+
+.event.renewal-expiry {
+  background: #805ad5;
 }
-.event-hoverable:hover .event-popup {
-  display: block;
-}
-.event-with-popup {
-  position: relative;
-  display: inline-block;
+
+.event.property-anniversary {
+  background: #2d3748;
 }
 
 .event-btn {
@@ -557,12 +609,155 @@ function nextMonth() {
   padding: 0;
   margin: 0;
   cursor: pointer;
+  width: 100%;
+  text-align: left;
+  display: block;
+}
+
+.event-label {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+/* Legend */
+.calendar-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  border-top: 1px solid var(--calendar-border);
+  background: #ffffff;
+  flex-shrink: 0;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.legend-item {
   display: flex;
   align-items: center;
-  gap: 0.3em;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  color: #374151;
+  font-weight: 400;
 }
-.event-btn:focus {
-  outline: 2px solid #1976d2;
-  outline-offset: 2px;
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.checkmark {
+  color: white;
+  font-size: 8px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.legend-dot.maintenance {
+  background: #4a5568;
+}
+
+.legend-dot.rent-review {
+  background: #d69e2e;
+}
+
+.legend-dot.lease-break {
+  background: #38a169;
+}
+
+.legend-dot.compliance {
+  background: #2d3748;
+}
+
+.legend-dot.term-renewal {
+  background: #805ad5;
+}
+
+.legend-dot.budget-end {
+  background: #e53e3e;
+}
+
+.legend-dot.insurance-renewal {
+  background: #3182ce;
+}
+
+.legend-dot.suppliers-insurance {
+  background: #38a169;
+}
+
+.legend-dot.property-key {
+  background: #d69e2e;
+}
+
+.legend-dot.property-insurance {
+  background: #4a5568;
+}
+
+.legend-dot.final-bond {
+  background: #805ad5;
+}
+
+.legend-dot.renewal-options {
+  background: #2d3748;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .calendar-cell,
+  .day-label {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.75rem;
+  }
+  
+  .date-number {
+    font-size: 0.75rem;
+  }
+  
+  .event-label {
+    font-size: 0.625rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .calendar-cell,
+  .day-label {
+    padding: 0.25rem 0.125rem;
+    font-size: 0.625rem;
+  }
+  
+  .calendar-legend {
+    padding: 0.75rem;
+    gap: 0.75rem;
+  }
+  
+  .legend-item {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .calendar-header-section {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .calendar-controls {
+    justify-content: center;
+  }
+  
+  .view-controls {
+    justify-content: center;
+  }
 }
 </style> 

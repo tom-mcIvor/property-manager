@@ -2,7 +2,8 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import IconsBar from './components/IconsBar.vue'
-// No imports needed for now; router-view will handle page rendering
+import SubNavbar from './components/SubNavbar.vue'
+import Operational from './components/Operational.vue'
 
 const router = useRouter()
 const showLogin = ref(false)
@@ -32,6 +33,11 @@ function closeReportingDropdown() {
   showReportingDropdown.value = false
 }
 
+const showHamburgerDropdown = ref(false);
+
+// Operational sidebar state
+const isOperationalOpen = ref(false)
+
 function goToDashboard() {
   router.push('/dashboard')
 }
@@ -48,6 +54,16 @@ function submitLogin() {
   showLogin.value = false
   loginError.value = ''
   // You can add real authentication logic here
+}
+
+function openOperational() {
+  closePropertyDropdown()
+  router.push('/tenancies')
+  isOperationalOpen.value = true
+}
+
+function closeOperational() {
+  isOperationalOpen.value = false
 }
 </script>
 
@@ -66,12 +82,12 @@ function submitLogin() {
         </button>
         <div v-if="showPropertyDropdown" class="property-dropdown-menu">
           <button class="dropdown-item" @click="() => { closePropertyDropdown(); router.push('/properties'); }">Properties</button>
-          <button class="dropdown-item" @click="closePropertyDropdown">Tenancies</button>
-          <button class="dropdown-item" @click="closePropertyDropdown">Rent Reviews</button>
-          <button class="dropdown-item" @click="closePropertyDropdown">Maintenance</button>
-          <button class="dropdown-item" @click="closePropertyDropdown">Compliance</button>
-          <button class="dropdown-item" @click="closePropertyDropdown">Insurance</button>
-          <button class="dropdown-item" @click="closePropertyDropdown">Inspections</button>
+          <button class="dropdown-item" @click="openOperational">Tenancies</button>
+          <button class="dropdown-item" @click="() => { closePropertyDropdown(); router.push('/rent-reviews'); }">Rent Reviews</button>
+          <button class="dropdown-item" @click="() => { closePropertyDropdown(); router.push('/maintenance'); }">Maintenance</button>
+          <button class="dropdown-item" @click="() => { closePropertyDropdown(); router.push('/compliance'); }">Compliance</button>
+          <button class="dropdown-item" @click="() => { closePropertyDropdown(); router.push('/insurance'); }">Insurance</button>
+          <button class="dropdown-item" @click="() => { closePropertyDropdown(); router.push('/inspections'); }">Inspections</button>
         </div>
       </div>
       <div class="nav-item property-dropdown-wrapper" @mouseenter="showAccountingDropdown = true" @mouseleave="showAccountingDropdown = false">
@@ -79,13 +95,13 @@ function submitLogin() {
           Accounting <span class="chevron">▼</span>
         </button>
         <div v-if="showAccountingDropdown" class="property-dropdown-menu">
-          <button class="dropdown-item" @click="closeAccountingDropdown">Income & Expenses</button>
-          <button class="dropdown-item" @click="closeAccountingDropdown">Invoice Intelligence</button>
-          <button class="dropdown-item" @click="closeAccountingDropdown">Arrears</button>
-          <button class="dropdown-item" @click="closeAccountingDropdown">Re-Leased Pay</button>
-          <button class="dropdown-item" @click="closeAccountingDropdown">Invoice Approvals</button>
-          <button class="dropdown-item" @click="closeAccountingDropdown">Owner Fees</button>
-          <button class="dropdown-item" @click="closeAccountingDropdown">Tenant Late Fees</button>
+          <button class="dropdown-item" @click="() => { closeAccountingDropdown(); router.push('/income-expenses'); }">Income & Expenses</button>
+          <button class="dropdown-item" @click="() => { closeAccountingDropdown(); router.push('/invoice-intelligence'); }">Invoice Intelligence</button>
+          <button class="dropdown-item" @click="() => { closeAccountingDropdown(); router.push('/arrears'); }">Arrears</button>
+          <button class="dropdown-item" @click="() => { closeAccountingDropdown(); router.push('/re-leased-pay'); }">Re-Leased Pay</button>
+          <button class="dropdown-item" @click="() => { closeAccountingDropdown(); router.push('/invoice-approvals'); }">Invoice Approvals</button>
+          <button class="dropdown-item" @click="() => { closeAccountingDropdown(); router.push('/owner-fees'); }">Owner Fees</button>
+          <button class="dropdown-item" @click="() => { closeAccountingDropdown(); router.push('/tenant-late-fees'); }">Tenant Late Fees</button>
         </div>
       </div>
       <div class="nav-item property-dropdown-wrapper" @mouseenter="showReportingDropdown = true" @mouseleave="showReportingDropdown = false">
@@ -93,13 +109,13 @@ function submitLogin() {
           Reporting <span class="chevron">▼</span>
         </button>
         <div v-if="showReportingDropdown" class="property-dropdown-menu">
-          <button class="dropdown-item" @click="closeReportingDropdown">General</button>
-          <button class="dropdown-item" @click="closeReportingDropdown">Report Builder</button>
-          <button class="dropdown-item" @click="closeReportingDropdown">Insights</button>
+          <button class="dropdown-item" @click="() => { closeReportingDropdown(); router.push('/general'); }">General</button>
+          <button class="dropdown-item" @click="() => { closeReportingDropdown(); router.push('/report-builder'); }">Report Builder</button>
+          <button class="dropdown-item" @click="() => { closeReportingDropdown(); router.push('/insights'); }">Insights</button>
         </div>
       </div>
     </nav>
-    <div class="nav-right">
+    <div class="nav-right" @mouseenter="showHamburgerDropdown = true" @mouseleave="showHamburgerDropdown = false">
       <button class="icon-btn menu-btn" title="More">
         <div class="hamburger">
           <span></span>
@@ -107,32 +123,45 @@ function submitLogin() {
           <span></span>
         </div>
       </button>
-      <button class="navbar-avatar" aria-label="Profile" @click="toggleLogin"><span class="navbar-avatar-text">TM</span></button>
-      <div v-if="showLogin" class="login-dropdown">
-        <form class="login-form" @submit.prevent="submitLogin">
-          <div class="login-form-group">
-            <input type="text" v-model="username" placeholder="Username" autocomplete="username" />
-          </div>
-          <div class="login-form-group">
-            <input type="password" v-model="password" placeholder="Password" autocomplete="current-password" />
-          </div>
-          <div v-if="loginError" class="login-error">{{ loginError }}</div>
-          <button type="submit" class="login-submit-btn">Login</button>
-        </form>
+      <div v-if="showHamburgerDropdown" class="hamburger-dropdown">
+        <button class="dropdown-item" @click="() => { showHamburgerDropdown = false; /* Add settings logic here */ }">Settings</button>
+        <button class="dropdown-item" @click="() => { showHamburgerDropdown = false; /* Add help logic here */ }">Help</button>
+        <button class="dropdown-item" @click="() => { showHamburgerDropdown = false; /* Add contact support logic here */ }">Contact Support</button>
+      </div>
+      <div class="login-hover-wrapper" @mouseenter="showLogin = true" @mouseleave="showLogin = false">
+        <button class="navbar-avatar" aria-label="Profile">
+          <span class="navbar-avatar-text">TM</span>
+        </button>
+        <div v-if="showLogin" class="login-dropdown">
+          <form class="login-form" @submit.prevent="submitLogin">
+            <div class="login-form-group">
+              <input type="text" v-model="username" placeholder="Username" autocomplete="username" />
+            </div>
+            <div class="login-form-group">
+              <input type="password" v-model="password" placeholder="Password" autocomplete="current-password" />
+            </div>
+            <div v-if="loginError" class="login-error">{{ loginError }}</div>
+            <button type="submit" class="login-submit-btn">Login</button>
+          </form>
+        </div>
       </div>
     </div>
   </header>
-  <div class="sub-navbar">
-    <span class="sub-navbar-title">All Companies</span>
-    <div style="display: flex; align-items: center; gap: 1rem;">
-      <input class="search-bar" type="text" placeholder="Search..." />
-      <!-- <IconsBar /> removed -->
-    </div>
-  </div>
+  <SubNavbar />
   <main>
     <router-view />
   </main>
+  
+  <!-- Operational Sidebar -->
+  <Operational :isOpen="isOperationalOpen" @close="closeOperational" />
 </template>
+
+<style>
+#app {
+  background-color: #ffffff;
+  min-height: 100vh;
+}
+</style>
 
 <style scoped>
 .main-navbar {
@@ -204,6 +233,7 @@ function submitLogin() {
   gap: 1.5rem;
   margin-left: auto;
   margin-right: 2.5rem;
+  align-items: center; /* Ensure vertical centering of nav-items */
 }
 .nav-item {
   color: #222;
@@ -213,6 +243,9 @@ function submitLogin() {
   position: relative;
   padding: 0.5rem 0.2rem;
   transition: color 0.2s;
+  display: flex; /* Make nav-item a flex container */
+  align-items: center; /* Vertically center text and children */
+  height: 56px; /* Match navbar height for perfect centering */
 }
 .nav-item.active, .nav-item:hover {
   color: #1976d2;
@@ -240,43 +273,11 @@ function submitLogin() {
 .icon-btn:hover {
   background: #f0f0f0;
 }
-.sub-navbar {
-  width: 100vw;
-  background: #ededed;
-  border-bottom: 1px solid #e0e0e0;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-left: 2.5rem;
-  padding-right: 2.5rem;
-  font-size: 1rem;
-  color: #444;
-  font-family: 'Inter', Arial, sans-serif;
-  box-sizing: border-box;
-  position: fixed;
-  top: 56px;
-  left: 0;
-  z-index: 999;
-}
-.sub-navbar-title {
-  font-weight: 400;
-  letter-spacing: 0.01em;
-}
-.search-bar {
-  width: 220px;
-  padding: 0.4rem 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1rem;
-  background: #fafafa;
-  margin-left: 2rem;
-}
 main {
   max-width: 100vw;
   margin: 0 auto;
   padding: 0;
-  padding-top: 56px;
+  padding-top: 71px; /* Fine-tuned positioning - moved up 1px */
 }
 main > *:first-child {
   margin-top: 0 !important;
@@ -479,6 +480,36 @@ main > *:first-child {
   border-radius: 0;
 }
 .dropdown-item:hover, .dropdown-item:focus {
+  background: #1976d2;
+  color: #fff;
+}
+.hamburger-dropdown {
+  position: absolute;
+  top: 48px;
+  right: 0;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  padding: 0.5rem 0;
+  z-index: 2000;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+}
+.hamburger-dropdown .dropdown-item {
+  padding: 0.7rem 1.5rem;
+  color: #222;
+  text-decoration: none;
+  font-size: 1rem;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+  border-radius: 0;
+}
+.hamburger-dropdown .dropdown-item:hover, .hamburger-dropdown .dropdown-item:focus {
   background: #1976d2;
   color: #fff;
 }

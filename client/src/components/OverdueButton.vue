@@ -1,9 +1,22 @@
 <template>
-  <button>OverdueButton</button>
+  <button class="sidebar-tab" :class="{ active }" @click="$emit('click')">
+    Overdue <span class="tab-count">{{ count }}</span>
+  </button>
 </template>
 
 <script setup>
-// OverdueButton stub
+import { defineProps, defineEmits } from 'vue';
+const props = defineProps({
+  count: {
+    type: [Number, String],
+    required: true
+  },
+  active: {
+    type: Boolean,
+    default: false
+  }
+});
+defineEmits(['click']);
 </script>
 
 <style scoped>
