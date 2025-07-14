@@ -28,9 +28,22 @@
           <div v-for="(date, dIdx) in week" :key="dIdx" class="calendar-cell">
             <div class="calendar-cell-content">
               <div v-if="date" class="date-number">{{ date.day }}</div>
-              <div v-for="event in date?.events || []" :key="event.id" :class="['event', event.type]">
-                <span class="event-bang">!</span>
-                <span class="event-label">{{ event.label.replace(/^!\s*/, '') }}</span>
+              <div v-for="event in date?.events || []" :key="event.id"
+                :class="['event', event.type]">
+                <div class="event-with-popup">
+                  <button class="event-btn"
+                    @mouseenter="showPopup(event, date.day, currentMonth, currentYear)"
+                    @mouseleave="hidePopup()">
+                    <span class="event-bang">!</span>
+                    <span class="event-label">{{ event.label.replace(/^!\s*/, '') }}</span>
+                  </button>
+                  <LocalEventPopup
+                    v-if="hoveredEvent && hoveredEvent.id === event.id"
+                    :event="hoveredEvent"
+                    :date="hoveredEventDate"
+                    :month="hoveredEventMonth"
+                    :year="hoveredEventYear" />
+                </div>
               </div>
             </div>
           </div>
@@ -43,6 +56,27 @@
 <script setup>
 // All calendar logic from DashboardPage.vue
 import { ref, computed } from 'vue';
+import LocalEventPopup from './LocalEventPopup.vue';
+
+// Local popup state management
+const hoveredEvent = ref(null);
+const hoveredEventDate = ref(null);
+const hoveredEventMonth = ref(null);
+const hoveredEventYear = ref(null);
+
+function showPopup(event, date, month, year) {
+  hoveredEvent.value = event;
+  hoveredEventDate.value = date;
+  hoveredEventMonth.value = month;
+  hoveredEventYear.value = year;
+}
+
+function hidePopup() {
+  hoveredEvent.value = null;
+  hoveredEventDate.value = null;
+  hoveredEventMonth.value = null;
+  hoveredEventYear.value = null;
+}
 
 const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -360,7 +394,7 @@ function nextMonth() {
   border-right: 1px solid #ededed;
   word-break: break-word;
   white-space: normal;
-  overflow: hidden;
+  overflow: visible; /* Allow popup to show outside cell */
   text-overflow: ellipsis;
   max-width: 100%;
 }
@@ -487,5 +521,48 @@ function nextMonth() {
   font-size: 0.75em;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.event-hoverable {
+  position: relative;
+  cursor: pointer;
+}
+.event-popup {
+  display: none;
+  position: absolute;
+  left: 110%;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #222;
+  color: #fff;
+  padding: 0.5em 1em;
+  border-radius: 6px;
+  white-space: nowrap;
+  font-size: 0.95em;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  z-index: 10;
+}
+.event-hoverable:hover .event-popup {
+  display: block;
+}
+.event-with-popup {
+  position: relative;
+  display: inline-block;
+}
+
+.event-btn {
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+}
+.event-btn:focus {
+  outline: 2px solid #1976d2;
+  outline-offset: 2px;
 }
 </style> 

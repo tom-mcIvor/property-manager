@@ -16,35 +16,47 @@
     </div>
     <div class="dashboard-sidebar">
       <div class="sidebar-tabs">
-        <button class="sidebar-tab active">Today <span class="tab-count">2</span></button>
-        <button class="sidebar-tab">Overdue <span class="tab-count">603</span></button>
+        <TodayButton :count="2" :active="sidebarTab === 'today'" @click="sidebarTab = 'today'" />
+        <OverdueButton :count="603" :active="sidebarTab === 'overdue'" @click="sidebarTab = 'overdue'" />
       </div>
-      <div class="sidebar-events">
-        <div class="event-card maintenance">
-          <div class="event-dot maintenance"></div>
-          <div class="event-main">
-            <div class="event-title">Maintenance <span class="event-date">3/04/2025</span></div>
-            <div class="event-property">Property: 34 Queen St</div>
-            <div class="event-tenancy">Tenancy: Marsland - Head Lease</div>
+      <div class="sidebar-events" v-if="sidebarTab === 'overdue' || sidebarTab === 'today'">
+        <template v-if="sidebarTab === 'today'">
+          <div class="event-card maintenance">
+            <div class="event-dot maintenance"></div>
+            <div class="event-main">
+              <div class="event-title">Maintenance <span class="event-date">3/04/2025</span></div>
+              <div class="event-property">Property: 34 Queen St</div>
+              <div class="event-tenancy">Tenancy: Marsland - Head Lease</div>
+            </div>
           </div>
-        </div>
-        <div class="event-card inspection">
-          <div class="event-dot inspection"></div>
-          <div class="event-main">
-            <div class="event-title">Inspection <span class="event-date">3/04/2025</span></div>
-            <div class="event-property">Property: 34 Queen St</div>
-            <div class="event-tenancy">Tenancy: Smartechnologies</div>
+          <div class="event-card inspection">
+            <div class="event-dot inspection"></div>
+            <div class="event-main">
+              <div class="event-title">Inspection <span class="event-date">3/04/2025</span></div>
+              <div class="event-property">Property: 34 Queen St</div>
+              <div class="event-tenancy">Tenancy: Smartechnologies</div>
+            </div>
           </div>
-        </div>
-        <div class="event-card anniversary">
-          <div class="event-dot anniversary"></div>
-          <div class="event-main">
-            <div class="event-title">Property Anniversary <span class="event-date">1/01/2005</span></div>
-            <div class="event-property">Property: 219 Moore Street</div>
+          <div class="event-card anniversary">
+            <div class="event-dot anniversary"></div>
+            <div class="event-main">
+              <div class="event-title">Property Anniversary <span class="event-date">1/01/2005</span></div>
+              <div class="event-property">Property: 219 Moore Street</div>
+            </div>
+            <div class="event-overdue-bar"></div>
           </div>
-          <div class="event-overdue-bar"></div>
-        </div>
-        <!-- More event cards as needed -->
+        </template>
+        <template v-else>
+          <div v-for="ticket in overdueTickets" :key="ticket.id" :class="['event-card', ticket.typeClass]">
+            <div :class="['event-dot', ticket.typeClass]"></div>
+            <div class="event-main">
+              <div class="event-title">{{ ticket.typeLabel }} <span class="event-date">{{ ticket.date }}</span></div>
+              <div class="event-property">{{ ticket.property }}</div>
+              <div class="event-tenancy">{{ ticket.tenancy }}</div>
+            </div>
+            <div class="event-overdue-bar"></div>
+          </div>
+        </template>
       </div>
     </div>
   </div>
@@ -56,8 +68,29 @@ import MyCalendar from './MyCalendar.vue';
 import GlobalCalendar from './GlobalCalendar.vue';
 import MyAnalytics from './MyAnalytics.vue';
 import MyInbox from './MyInbox.vue';
-
+import TodayButton from './TodayButton.vue';
+import OverdueButton from './OverdueButton.vue';
 const activeTab = ref('my');
+const sidebarTab = ref('today');
+
+// Generate 603 fake overdue tickets with types cycling through maintenance, inspection, renewal, property
+const overdueTypes = [
+  { label: 'Test Maintenance', class: 'maintenance' },
+  { label: 'Test Inspection', class: 'inspection' },
+  { label: 'Test Renewal', class: 'anniversary' },
+  { label: 'Test Property', class: 'maintenance' },
+];
+const overdueTickets = Array.from({ length: 603 }, (_, i) => {
+  const type = overdueTypes[i % overdueTypes.length];
+  return {
+    id: i + 1,
+    property: `Property #${i + 1}`,
+    tenancy: `Tenancy #${i + 1}`,
+    date: `2025-04-${String((i % 30) + 1).padStart(2, '0')}`,
+    typeLabel: type.label,
+    typeClass: type.class,
+  };
+});
 
 function setTab(tab) {
   activeTab.value = tab;
@@ -103,7 +136,7 @@ function setTab(tab) {
   box-shadow: 0 2px 8px #0001;
   display: flex;
   flex-direction: column;
-  height: 74vh;
+  /* height: 74vh; */
   margin: 0;
   padding: 0.5rem 0.5rem 0.5rem 0.5rem;
 }
@@ -135,12 +168,12 @@ function setTab(tab) {
   margin-left: 0.2em;
 }
 .sidebar-events {
-  flex: 1;
+  max-height: 74vh;
   overflow-y: auto;
   padding-right: 0.2rem;
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
+  gap: 1.2rem;
 }
 .event-card {
   background: #fff;
@@ -152,6 +185,7 @@ function setTab(tab) {
   align-items: flex-start;
   position: relative;
   min-height: 70px;
+  margin-bottom: 0;
 }
 .event-dot {
   width: 10px;
@@ -439,5 +473,24 @@ function setTab(tab) {
 .event-label {
   display: inline-block;
   vertical-align: middle;
+}
+.toggle-popup-btn {
+  position: fixed;
+  top: 24px;
+  right: 32px;
+  z-index: 10001;
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.7em 1.4em;
+  font-size: 1em;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+  transition: background 0.2s;
+}
+.toggle-popup-btn:hover {
+  background: #1356a2;
 }
 </style> 

@@ -1,6 +1,25 @@
 <template>
   <div class="calendar-panel">
     <div class="calendar-inner">
+      <div class="calendar-search-bar-wrapper">
+        <input type="text" class="calendar-search-bar" placeholder="Search calendar..." />
+      </div>
+      <div class="calendar-refresh-btn-wrapper">
+        <button class="calendar-refresh-btn">Refresh Calendar</button>
+      </div>
+      <div class="calendar-header">
+        <button class="nav-btn" aria-label="Previous Month" @click="prevMonth">
+          <svg width="18" height="18" viewBox="0 0 18 18" style="display:block" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="12,4 6,9 12,14" fill="#666" />
+          </svg>
+        </button>
+        <span class="month-label">{{ monthLabel }}</span>
+        <button class="nav-btn" aria-label="Next Month" @click="nextMonth">
+          <svg width="18" height="18" viewBox="0 0 18 18" style="display:block" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="6,4 12,9 6,14" fill="#666" />
+          </svg>
+        </button>
+      </div>
       <div class="calendar-grid">
         <div class="calendar-row calendar-days">
           <div v-for="day in days" :key="day" class="calendar-cell day-label">{{ day }}</div>
@@ -101,6 +120,22 @@ function getWeeks(year, month) {
 
 const weeks = computed(() => getWeeks(currentYear.value, currentMonth.value));
 const monthLabel = computed(() => `${monthNames[currentMonth.value]} ${currentYear.value}`);
+
+function prevMonth() {
+  currentMonth.value--;
+  if (currentMonth.value < 0) {
+    currentMonth.value = 11;
+    currentYear.value--;
+  }
+}
+
+function nextMonth() {
+  currentMonth.value++;
+  if (currentMonth.value > 11) {
+    currentMonth.value = 0;
+    currentYear.value++;
+  }
+}
 </script>
 
 <style scoped>
@@ -250,4 +285,87 @@ const monthLabel = computed(() => `${monthNames[currentMonth.value]} ${currentYe
 .event.review { background: var(--event-review); }
 .event.key { background: var(--event-key); }
 .event.expiry { background: var(--event-expiry); }
+
+.calendar-search-bar-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+}
+.calendar-search-bar {
+  width: 100%;
+  max-width: none;
+  padding: 0.7rem 1.2rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #fafafa;
+  color: #222;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  transition: border 0.2s, box-shadow 0.2s;
+}
+.calendar-search-bar:focus {
+  outline: none;
+  border: 1.5px solid #1976d2;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+}
+.calendar-refresh-btn-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  margin-top: -0.9rem;
+  margin-bottom: 0.8rem;
+}
+.calendar-refresh-btn {
+  background: #222;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.4rem 0.96rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.calendar-refresh-btn:hover {
+  background: #444;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #ededed;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.nav-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.nav-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #1976d2, 0 0 0 4px #1976d2;
+}
+
+.month-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #222;
+  flex-grow: 1;
+  text-align: center;
+}
 </style> 
